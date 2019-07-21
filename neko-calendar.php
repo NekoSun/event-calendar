@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: neko-calendar
-Plugin URI: https://github.com/NekoSun
+Plugin URI: https://github.com/NekoSun/event-calendar
 Description: Календарь событий.
 Version: 1.0.2
 Author: NekoSun
