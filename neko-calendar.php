@@ -154,8 +154,8 @@ function neko_calen_store_init() {
 }
 
 if (is_admin()) {
-  // колонка "ID" для рубрик, меток и т.д.
 
+  // колонка "ID" для рубрик, меток и т.д.
   add_action("manage_edit-neko-taxonomy_columns", 'tax_add_col');
   add_filter("manage_edit-neko-taxonomy_sortable_columns", 'tax_add_col');
   add_filter("manage_neko-taxonomy_custom_column", 'tax_show_id', 10, 3);
@@ -165,9 +165,7 @@ if (is_admin()) {
   function tax_id_style() {print '<style>#tax_id{width:3em}</style>';}
 }
 
-
 // подключение стилей в админку
-
 datepicker_js();
 
 // подключаем функцию активации мета блока (my_extra_fields)
@@ -214,8 +212,6 @@ function neko_cl_meta_box( $post_id ) {
 }
 
 // добавление полей мета данных
-
-
 remove_shortcode( 'prefix_calendar' );
 
 add_shortcode( 'prefix_calendar', 'neko_calendar' );
@@ -230,19 +226,17 @@ function neko_calendar($atts) {
   if( !$category_id[0] ) return '<div>Не добавлена категория календаря</div>';
   if( $category_id[1] ) return '<div>Возможно добавить только один календарь</div>';
 
-  $calendars = '<ul>';
+  global $post;
+  $args = array( 'numberposts' => -1, 'category' => $category_id);
+  $myposts = get_posts( $args );
+  foreach( $myposts as $post ){ setup_postdata($post);
 
-    global $post;
-    $args = array( 'numberposts' => -1, 'category' => 195);
-    $myposts = get_posts( $args );
-    foreach( $myposts as $post ){ setup_postdata($post);
   ?>
-      <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+    <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
   <?php
     }
-    wp_reset_postdata();
 
-  $calendars = '</ul>';
+  wp_reset_postdata();
 
   function country() {
     $uuuu = get_the_terms( $post->ID, 'neko-taxonomy-cou' );
@@ -276,8 +270,6 @@ function neko_calendar($atts) {
     return $term;
   }
 
-
-
   $args = array(
     'post_type' => 'neko-calen',
     'neko-taxonomy' => $terms->slug
@@ -304,21 +296,17 @@ function neko_calendar($atts) {
     'color'=> '#2c6a04'
   ));
 
-  ?>
-
-  <?php endwhile;
+  endwhile;
 
   // используем сброс данных записи, чтобы восстановить оригинальный запрос
   wp_reset_postdata();
 
-  ?>
-  <div id='calendar'></div>
-
-  <div id='modal'></div>
-  <?php
+  $calendars = "<div id='calendar'></div>";
+  $calendars .= "<div id='modal'></div>";
 
   add_action( 'wp_footer', 'neko_fullcalendar_styles' );
 
+  return $calendars;
 }
 
 function neko_fullcalendar_styles() {
